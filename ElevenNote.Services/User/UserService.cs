@@ -38,6 +38,29 @@ namespace ElevenNote.Services.User
             return numberOfChanges == 1; //if numOfChanges is equal to 1, return true
         }
 
+        //GetUserById
+
+        public async Task<UserDetail> GetUserByIdAsync(int userId)
+        {
+            var entity = await _context.Users.FindAsync(userId);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            var userDetail = new UserDetail
+            {
+                Id = entity.Id,
+                Email = entity.Email,
+                Username = entity.Username,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                DateCreated = entity.DateCreated
+            };
+
+            return userDetail;
+        }
+
         //Helper Methods 
         private async Task<UserEntity> GetUserByEmailAsync(string email)
         {
