@@ -55,6 +55,8 @@ namespace ElevenNote.WebAPI
 
             app.UseRouting();
 
+            //Adds AuthenticationMiddleware to the IApplicationBuilder, enabling authentication capabilities.
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ElevenNote.Models.User;
 using ElevenNote.Services.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +42,8 @@ namespace ElevenNote.WebAPI.Controllers
 
         //GetUserById
 
-        [HttpGet("{userId: int}")]
+        [Authorize]
+        [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetUserById([FromRoute] int userId)
         {
             var userDetail = await _service.GetUserByIdAsync(userId);
