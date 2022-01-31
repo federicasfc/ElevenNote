@@ -21,6 +21,8 @@ namespace ElevenNote.WebAPI.Controllers
             _service = service; //remember service is where the bulk of the logic(and methods reside) that's why we're utilizing it here (creo)
         }
 
+        //Post 
+
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserRegister model)
         {
@@ -36,5 +38,20 @@ namespace ElevenNote.WebAPI.Controllers
             }
             return Ok("User was registered"); //bringing in service here in the way that previously we would have used context. If I'm following, we are basically adding an extra layer between our database and the userInput data. 
         } //works, should ask about switched order just in case
+
+        //GetUserById
+
+        [HttpGet("{userId: int}")]
+        public async Task<IActionResult> GetUserById([FromRoute] int userId)
+        {
+            var userDetail = await _service.GetUserByIdAsync(userId);
+
+            if (userDetail is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userDetail);
+        }
     }
 }
