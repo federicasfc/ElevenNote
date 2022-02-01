@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElevenNote.Models.Token;
 using ElevenNote.Models.User;
+using ElevenNote.Services.Token;
 using ElevenNote.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +16,15 @@ namespace ElevenNote.WebAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase //inheritance, yes; ControllerBase actually has the logic that catches our HTTP requests, or has stuff like ModelState built-in; basically handles the background functionality stuff of http that we use. I think.
     {
-        private readonly IUserService _service; //equivalent of _context?; note interface is being used, not class
+        private readonly IUserService _userService; //equivalent of _context?; note interface is being used, not class
+
+        private readonly TokenService _tokenService;
 
         //Constructor
-        public UserController(IUserService service)
+        public UserController(IUserService userService, TokenService tokenService)
         {
-            _service = service; //remember service is where the bulk of the logic(and methods reside) that's why we're utilizing it here (creo)
+            _userService = userService; //remember service is where the bulk of the logic(and methods reside) that's why we're utilizing it here (creo)
+            _tokenService = tokenService;
         }
 
         //Post 
@@ -32,7 +37,7 @@ namespace ElevenNote.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var registerResult = await _service.RegisterUserAsync(model);
+            var registerResult = await _userService.RegisterUserAsync(model);
             if (!registerResult)
             {
                 return BadRequest("User could not be registered");
@@ -46,7 +51,7 @@ namespace ElevenNote.WebAPI.Controllers
         [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetUserById([FromRoute] int userId)
         {
-            var userDetail = await _service.GetUserByIdAsync(userId);
+            var userDetail = await _userService.GetUserByIdAsync(userId);
 
             if (userDetail is null)
             {
@@ -54,6 +59,20 @@ namespace ElevenNote.WebAPI.Controllers
             }
 
             return Ok(userDetail);
+        }
+
+        [HttpPost("~/api/Token")]
+
+        public async Task<IActionResult> Token([FromBody] TokenRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var tokenResponse = await _tokenService.GetTokenAsync(request);
+            if (tokenResponse is null)
+                return BadRequest("Invalid username or password");
+
+            return Ok(tokenResponse);
         }
     }
 }
