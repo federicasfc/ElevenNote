@@ -12,7 +12,7 @@ namespace ElevenNote.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase //inheritance?
+    public class UserController : ControllerBase //inheritance, yes; ControllerBase actually has the logic that catches our HTTP requests, or has stuff like ModelState built-in; basically handles the background functionality stuff of http that we use. I think.
     {
         private readonly IUserService _service; //equivalent of _context?; note interface is being used, not class
 
