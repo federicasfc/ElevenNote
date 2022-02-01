@@ -7,7 +7,7 @@ using ElevenNote.Models.User;
 using ElevenNote.Services.Token;
 using ElevenNote.Services.User;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http; //Unnecessary using directive...because of ControllerBase?
 using Microsoft.AspNetCore.Mvc;
 
 namespace ElevenNote.WebAPI.Controllers

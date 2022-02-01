@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ElevenNote.Data;
+using ElevenNote.Services.Note;
 using ElevenNote.Services.Token;
 using ElevenNote.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,9 +37,13 @@ namespace ElevenNote.WebAPI
             //Add connection string and DbContext setup
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-            //Add User Service/Interface for Dependency Injection here
+
+            services.AddHttpContextAccessor(); //granting us access to HttpContext so we can get into it from service??? //Is this because the controllers are part of the webAPI That likely has built in acccess to httpContext functionality?? Is that why we can't just inherit controller base in NoteService? because it's part of the classlib Services and not a webApi??
+            //Add User Service/Interface for Dependency Injection here:
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<INoteService, NoteService>(); //do we have to add this here in order to make clear that there is an rship between I and class? why wouldn't a namespace work alone?
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
