@@ -18,10 +18,10 @@ namespace ElevenNote.WebAPI.Controllers
     {
         private readonly IUserService _userService; //equivalent of _context?; note interface is being used, not class
 
-        private readonly TokenService _tokenService;
+        private readonly ITokenService _tokenService;
 
         //Constructor
-        public UserController(IUserService userService, TokenService tokenService)
+        public UserController(IUserService userService, ITokenService tokenService)
         {
             _userService = userService; //remember service is where the bulk of the logic(and methods reside) that's why we're utilizing it here (creo)
             _tokenService = tokenService;

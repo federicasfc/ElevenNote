@@ -64,6 +64,7 @@ namespace ElevenNote.Services.Token
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            //Payload of Token:
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = _configuration["Jwt:Issuer"],
@@ -78,14 +79,14 @@ namespace ElevenNote.Services.Token
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            var TokenResponse = new TokenResponse
+            var tokenResponse = new TokenResponse
             {
                 Token = tokenHandler.WriteToken(token),
                 IssuedAt = token.ValidFrom,
                 Expires = token.ValidTo
             };
 
-            return TokenResponse;
+            return tokenResponse;
         }
 
         private Claim[] GetClaims(UserEntity user)
