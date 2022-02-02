@@ -114,5 +114,21 @@ namespace ElevenNote.Services.Note
 
 
         } //Mod 20.02
+
+        public async Task<bool> DeleteNoteAsync(int noteId)
+        {
+            //Find the note by the given Id
+
+            var noteEntity = await _dbContext.Notes.FindAsync(noteId);
+
+            //Validate the note exists and is owned by the user
+            if (noteEntity?.OwnerId != _userId)
+                return false;
+
+            //Remove the note from the DbContet and assert that the one change was saved
+
+            _dbContext.Notes.Remove(noteEntity);
+            return await _dbContext.SaveChangesAsync() == 1;
+        }
     }
 }
