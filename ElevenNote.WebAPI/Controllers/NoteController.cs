@@ -62,9 +62,25 @@ namespace ElevenNote.WebAPI.Controllers
             //If the returned value (detail) is not null, return it with a 200 Ok
             //Otherwise return a NotFound() 404 response
 
-            return detail is null
-            ? NotFound()
-            : Ok(detail); //switched logic again to have good result at bottom, makes less sense because now it is technically the else, but I want to keep the order anyway; confirm that I can do this
+            return detail is not null
+            ? Ok(detail)
+            : NotFound();
+
+        } //works
+
+        //UpdateNote Put
+
+        [HttpPut]
+
+        public async Task<IActionResult> UpdateNoteById([FromBody] NoteUpdate request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return await _noteService.UpdateNoteAsync(request)
+            ? Ok("Note updated successfully") //kept logic the same, since otherwise would technically be housing good result in an else
+            : BadRequest("Note could not be updated");
+
 
         }
 
