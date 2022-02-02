@@ -38,7 +38,7 @@ namespace ElevenNote.WebAPI.Controllers
 
 
             return Ok("Note created successfully");
-        }
+        } //works
 
         //GetAllNotes Endpoint
 
@@ -49,5 +49,27 @@ namespace ElevenNote.WebAPI.Controllers
             var notes = await _noteService.GetAllNotesAsync();
             return Ok(notes);
         } //works
+
+        //GetNoteById Endpoint
+
+        [HttpGet("{noteId:int}")]
+        public async Task<IActionResult> GetNoteById([FromRoute] int noteId)
+        {
+            var detail = await _noteService.GetNoteByIdAsync(noteId);
+
+            //Similar to our service method, we're using a ternary to determine our return type
+
+            //If the returned value (detail) is not null, return it with a 200 Ok
+            //Otherwise return a NotFound() 404 response
+
+            return detail is null
+            ? NotFound()
+            : Ok(detail); //switched logic again to have good result at bottom, makes less sense because now it is technically the else, but I want to keep the order anyway; confirm that I can do this
+
+        }
+
+
+
+
     }
 }

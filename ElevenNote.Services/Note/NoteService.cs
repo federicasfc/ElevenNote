@@ -16,6 +16,8 @@ namespace ElevenNote.Services.Note
         private readonly int _userId;
         private readonly ApplicationDbContext _dbContext;
 
+        //Constructor
+
         public NoteService(IHttpContextAccessor httpContextAccessor, ApplicationDbContext dbContext)
         {
             var userClaims = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
@@ -27,6 +29,8 @@ namespace ElevenNote.Services.Note
 
             _dbContext = dbContext;
         } //Mod 15.04
+
+        //CreateNote
 
         public async Task<bool> CreateNoteAsync(NoteCreate request)
         {
@@ -45,6 +49,8 @@ namespace ElevenNote.Services.Note
             return numberOfChanges == 1;
         }
 
+        //GetAllNotes
+
         public async Task<IEnumerable<NoteListItem>> GetAllNotesAsync()
         {
             var notes = await _dbContext.Notes
@@ -56,6 +62,28 @@ namespace ElevenNote.Services.Note
                     CreatedUtc = entity.CreatedUtc
                 }).ToListAsync();
             return notes;
+        }
+
+        //GetNoteById
+
+        public async Task<NoteDetail> GetNoteByIdAsync(int noteId)
+        {
+            //Find the first note that has the given Id and an OwnerId that matches the requesting userId
+
+            var noteEntity = await _dbContext.Notes
+                .FirstOrDefaultAsync(e => e.Id == noteId && e.OwnerId == _userId);
+
+            //If noteEntity is null then return null, otherwise initialize and return a new NoteDetail
+
+            return noteEntity is null ? null : new NoteDetail
+            {
+                Id = noteEntity.Id,
+                Title = noteEntity.Title,
+                Content = noteEntity.Content,
+                CreatedUtc = noteEntity.CreatedUtc,
+                ModifiedUtc = noteEntity.ModifiedUtc
+            };
+
         }
     }
 }
